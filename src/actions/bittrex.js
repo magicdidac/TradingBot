@@ -21,8 +21,8 @@ export const getCryptoPrices = (currencie) => {
                     result
                 }
             })
-        }catch (error){
-            console.log('Error on ',GET_CRYPTO_PRICES)
+        } catch (error) {
+            console.log('Error on ', GET_CRYPTO_PRICES)
             throw error
         }
     }
@@ -31,7 +31,7 @@ export const getCryptoPrices = (currencie) => {
 export const updateCrypto = (currencie) => {
     return async dispatch => {
         try {
-            let result = await axios.get(`${BASE_URL_PHP}${BASE_URL_BITTREX}${currencie}/candles/TRADE/MINUTE_1/recent`,{
+            let result = await axios.get(`${BASE_URL_PHP}${BASE_URL_BITTREX}${currencie}/candles/TRADE/MINUTE_1/recent`, {
                 header: {
                     'Accept': 'application/json',
                     'Content-type': 'application/json'
@@ -41,11 +41,11 @@ export const updateCrypto = (currencie) => {
                 type: UPDATE_CRYPTO,
                 payload: {
                     currencie,
-                    result: result.data[result.data.length-2]
+                    result: result.data[result.data.length - 2]
                 }
             })
-        }catch (error){
-            console.log('Error on ',UPDATE_CRYPTO)
+        } catch (error) {
+            console.log('Error on ', UPDATE_CRYPTO)
             throw error
         }
     }
@@ -54,7 +54,7 @@ export const updateCrypto = (currencie) => {
 export const getCurrentCryptoPrice = (currencie) => {
     return async dispatch => {
         try {
-            let res = await axios.get(`${BASE_URL_PHP}${BASE_URL_BITTREX}${currencie}/ticker`,{
+            let res = await axios.get(`${BASE_URL_PHP}${BASE_URL_BITTREX}${currencie}/ticker`, {
                 header: {
                     'Accept': 'application/json',
                     'Content-type': 'application/json'
@@ -62,9 +62,11 @@ export const getCurrentCryptoPrice = (currencie) => {
             })
             dispatch({
                 type: GET_CURRENT_CRYPTO_PRICE,
-                payload:{
+                payload: {
                     currencie,
-                    cryptoPrice: res.data.lastTradeRate
+                    cryptoPrice: res.data.lastTradeRate,
+                    sellCryptoPrice: res.data.askRate,
+                    buyCryptoPrice: res.data.bidRate
                 }
             })
         } catch (error) {

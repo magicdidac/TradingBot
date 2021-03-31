@@ -22,14 +22,15 @@ class LuisStrategie extends BotStrategie {
 
     checkStatus(orders, bittrex, openOrder, closeOrder) {
         // The very first order
-        if (!this.state.isIn && !this.state.lastOrder) {
-            this.openOrder(openOrder, this.state.investment)
-            return
-        }
-
-        const currentPrice = bittrex[this.state.currencie].currentPrice
+        // if (!this.state.isIn && !this.state.lastOrder) {
+        //     this.openOrder(openOrder, this.state.investment)
+        //     return
+        // }
 
         if (this.state.isIn) {
+
+            const currentPrice = bittrex[this.state.currencie].buyCryptoPrice
+
             if (!this.state.inStopLoss && this.getPercentage(this.state.lastOrder.opened.cryptoPrice, currentPrice) > this.state.thresholdToSell) {
                 this.setInStopLoss(true)
             }
@@ -44,6 +45,7 @@ class LuisStrategie extends BotStrategie {
             }
 
         } else {
+            const currentPrice = bittrex[this.state.currencie].sellCryptoPrice
             this.getLower(currentPrice)
             if (this.getPercentage(this.state.lower, currentPrice) > this.state.stopLossBuy) {
                 this.openOrder(openOrder, this.state.investment)

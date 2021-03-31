@@ -25,10 +25,12 @@ export const bittrexReducer = (state = {}, action) => {
             return state
         case GET_CURRENT_CRYPTO_PRICE:
             if (action.payload) {
-                const { currencie, cryptoPrice } = action.payload
+                const { currencie, cryptoPrice, buyCryptoPrice, sellCryptoPrice } = action.payload
                 let newState = { ...state }
                 if (newState[currencie]) {
                     newState[currencie].currentPrice = cryptoPrice
+                    newState[currencie].buyCryptoPrice = buyCryptoPrice
+                    newState[currencie].sellCryptoPrice = sellCryptoPrice
                     return newState
                 }
             }

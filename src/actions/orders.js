@@ -2,9 +2,9 @@
 export const OPEN_ORDER = 'OPEN_ORDER';
 export const CLOSE_ORDER = 'CLOSE_ORDER';
 
-export const openOrder = (name, quantity, cryptoPrice, currencie) => {
+export const openOrder = (name, quantity, cryptoPrice, currencie, comfirmOpen) => {
     return dispatch => {
-        if(quantity <= 0){
+        if (quantity <= 0) {
             return
         }
         dispatch({
@@ -14,6 +14,7 @@ export const openOrder = (name, quantity, cryptoPrice, currencie) => {
                 quantity,
                 cryptoPrice,
                 currencie,
+                comfirmOpen,
                 date: new Date().getTime()
             }
         })
@@ -22,7 +23,7 @@ export const openOrder = (name, quantity, cryptoPrice, currencie) => {
 
 export const closeOrder = (name, openDate, cryptoPrice, sendQuantity) => {
     return dispatch => {
-        
+
         dispatch({
             type: CLOSE_ORDER,
             payload: {

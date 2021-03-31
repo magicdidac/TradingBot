@@ -31,16 +31,14 @@ class ThresholdStrategie extends BotStrategie {
         }
 
         if (this.state.isIn) {
-            const percentage = this.getPercentage(this.state.lastOrder.opened.cryptoPrice, bittrex[this.state.currencie].currentPrice)
-            // console.log(this.state.name, 'is trying to close in', this.state.currencie, 'with percentage of', percentage)
+            const percentage = this.getPercentage(this.state.lastOrder.opened.cryptoPrice, bittrex[this.state.currencie].buyCryptoPrice)
 
             if (percentage > this.state.thresholdSell || percentage < this.state.thresholdSellMax) {
                 this.closeOrder(closeOrder, this.state.lastOrder)
             }
 
         } else {
-            const percentage = this.getPercentage(this.state.lastOrder.closed.cryptoPrice, bittrex[this.state.currencie].currentPrice)
-            // console.log(this.state.name, 'is trying to open in', this.state.currencie, 'with percentage of', percentage)
+            const percentage = this.getPercentage(this.state.lastOrder.closed.cryptoPrice, bittrex[this.state.currencie].sellCryptoPrice)
 
             if (percentage < this.state.thresholdBuy || percentage > this.state.thresholdBuyMax) {
                 this.openOrder(openOrder, this.state.investment)

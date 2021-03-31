@@ -31,9 +31,7 @@ class BotStrategie {
             return
         }
 
-        this.state = { ...this.state, investment: (this.state.investment - investment), inInvestment: (this.state.inInvestment + investment) }
-        openOrder(this.state.name, investment, this.state.currencie)
-        this.openMessage(investment)
+        openOrder(this.state.name, investment, this.state.currencie, (quantity, openedOrder) => this.comfirmOpen(quantity, openedOrder))
         this.setIn();
     }
 
@@ -47,6 +45,12 @@ class BotStrategie {
 
     checkStatus(orders, bittrex, openOrder, closeOrder) {
         return
+    }
+
+    comfirmOpen(quantity, openedOrder) {
+        this.state = { ...this.state, investment: (this.state.investment - openedOrder.opened.quantityWithoutFees), inInvestment: (this.state.inInvestment + quantity) }
+        this.openMessage(quantity)
+        this.setIn()
     }
 
     sendQuantity(quantity, closedOrder) {
@@ -68,6 +72,9 @@ class BotStrategie {
     }
 
     render() {
+
+        const totalInvestment = (this.state.investment + this.state.inInvestment)
+
         return (
             <Card key={this.state.name} variant="outlined" style={{ margin: '50px' }}>
                 <CardHeader
@@ -76,7 +83,7 @@ class BotStrategie {
                 />
                 <CardContent>
                     <Typography>In: {this.state.inInvestment.toFixed(2)}$ - Remain: {this.state.investment.toFixed(2)}$</Typography>
-                    <Typography>Benefits: {((this.state.investment + this.state.inInvestment) - this.state.initialInvestment).toFixed(2)}$</Typography>
+                    <Typography>Benefits: {(totalInvestment - this.state.initialInvestment).toFixed(2)}$ | {parseFloat(this.getPercentage(this.state.initialInvestment, totalInvestment) * 100).toFixed(2)}%</Typography>
                 </CardContent>
             </Card>
         )

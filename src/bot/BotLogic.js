@@ -16,7 +16,7 @@ class BotLogic extends React.Component {
             loading: false,
             markets: [],
             strategies: [
-                new FirstStrategie('First', 'BTC-USD', 1000),
+                new FirstStrategie('First', 'BTC-USD', 100),
                 new ThresholdStrategie('TH 0.5%', 'BTC-USD', 1000, -0.005, 0.005, 0.005, -0.005),
                 new ThresholdStrategie('TH 1%  ', 'BTC-USD', 1000),
                 new ThresholdStrategie('TH     ', 'BTC-USD', 1000, -0.005, 0.003, 0.0075, -0.01),
@@ -69,12 +69,12 @@ class BotLogic extends React.Component {
         clearInterval(this.myInterval)
     }
 
-    openOrder(name, quantity, currencie, cryptoPrice) {
-        this.props.openOrder(name, quantity, cryptoPrice, currencie)
+    openOrder(name, quantity, currencie, comfirmOrder) {
+        this.props.openOrder(name, quantity, this.props.bittrexReducer[currencie].sellCryptoPrice, currencie, comfirmOrder)
     }
 
     closeOrder(name, openDate, currencie, sendQuantity) {
-        this.props.closeOrder(name, openDate, this.props.bittrexReducer[currencie].currentPrice, sendQuantity)
+        this.props.closeOrder(name, openDate, this.props.bittrexReducer[currencie].buyCryptoPrice, sendQuantity)
     }
 
     async wakeUpBot() {
@@ -88,22 +88,35 @@ class BotLogic extends React.Component {
 
         for (let strategie of this.state.strategies) {
             strategie.updateLastOrder(this.props.ordersReducer)
-            strategie.checkStatus(this.props.ordersReducer, this.props.bittrexReducer, (name, quantity, currencie, cryptoPrice = this.props.bittrexReducer[currencie].currentPrice) => { this.openOrder(name, quantity, currencie, cryptoPrice) }, (name, openDate, currencie, sendQuantity) => this.closeOrder(name, openDate, currencie, sendQuantity))
+            strategie.checkStatus(this.props.ordersReducer, this.props.bittrexReducer, (name, quantity, currencie, comfirmOrder) => { this.openOrder(name, quantity, currencie, comfirmOrder) }, (name, openDate, currencie, sendQuantity) => this.closeOrder(name, openDate, currencie, sendQuantity))
         }
 
         this.resetTimer()
     }
 
     resetTimer() {
-        this.setState({ seconds: 60, loading: false })
+        console.log("...Sleeping")
+        this.setState({ seconds: 10, loading: false })
+    }
+
+    getPriceRounded(price) {
+        return parseFloat(price).toFixed(4)
     }
 
     render() {
+
+        const { bittrexReducer } = this.props
+
         return (
             <div>
                 <AppBar position='static'>
                     <Toolbar>
                         {(this.state.seconds < 10) ? '0' + this.state.seconds : this.state.seconds}s | {this.state.strategies.length} bots running
+                        {
+                            this.state.markets.map((market) => {
+                                return (bittrexReducer[market] && bittrexReducer[market].currentPrice) ? ' | ' + market + ': ' + this.getPriceRounded(bittrexReducer[market].currentPrice) : ''
+                            })
+                        }
                     </Toolbar>
                 </AppBar>
                 {this.state.strategies.map(strategie => {
