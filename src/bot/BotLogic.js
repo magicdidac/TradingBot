@@ -1,10 +1,11 @@
-import { AppBar, Toolbar } from '@material-ui/core'
 import React from 'react'
+import { AppBar, GridList, Toolbar } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { updateCrypto, getCurrentCryptoPrice, getCryptoPrices, openOrder, closeOrder } from "../actions"
 import FirstStrategie from './strategies/FirstStrategie'
 import LuisStrategie from './strategies/LuisStrategie'
 import ThresholdStrategie from './strategies/ThresholdStrategie'
+import { MAX_BOTS_COLUMNS } from '../config'
 
 class BotLogic extends React.Component {
 
@@ -15,11 +16,12 @@ class BotLogic extends React.Component {
             seconds: 2,
             loading: false,
             markets: [],
+            currentBigBot: -1,
             strategies: [
                 new FirstStrategie('First', 'BTC-USD', 100),
-                new ThresholdStrategie('TH 0.5%', 'BTC-USD', 1000, -0.005, 0.005, 0.005, -0.005),
-                new ThresholdStrategie('TH 1%  ', 'BTC-USD', 1000),
-                new ThresholdStrategie('TH     ', 'BTC-USD', 1000, -0.005, 0.003, 0.0075, -0.01),
+                new ThresholdStrategie('TH 0.5%', 'BTC-USD', 100, -0.005, 0.005, 0.005, -0.005),
+                new ThresholdStrategie('TH 1%  ', 'BTC-USD', 100),
+                new ThresholdStrategie('TH     ', 'BTC-USD', 100, -0.005, 0.003, 0.0075, -0.01),
                 new LuisStrategie('L 5%', 'BTC-USD', 100),
                 new LuisStrategie('L 10%', 'BTC-USD', 100, 0.1),
                 new LuisStrategie('LU 5%', 'ETH-USD', 100),
@@ -32,6 +34,10 @@ class BotLogic extends React.Component {
                 new LuisStrategie('LUISS 10%', 'LBC-USD', 100, 0.1),
             ]
         }
+    }
+
+    setBigBot(index) {
+        this.setState({ currentBigBot: ((this.state.currentBigBot === index) ? -1 : index) })
     }
 
     componentDidMount() {
@@ -103,8 +109,9 @@ class BotLogic extends React.Component {
         return parseFloat(price).toFixed(4)
     }
 
-    render() {
 
+
+    render() {
         const { bittrexReducer } = this.props
 
         return (
@@ -114,14 +121,16 @@ class BotLogic extends React.Component {
                         {(this.state.seconds < 10) ? '0' + this.state.seconds : this.state.seconds}s | {this.state.strategies.length} bots running
                         {
                             this.state.markets.map((market) => {
-                                return (bittrexReducer[market] && bittrexReducer[market].currentPrice) ? ' | ' + market + ': ' + this.getPriceRounded(bittrexReducer[market].currentPrice) : ''
+                                return (bittrexReducer[market] && bittrexReducer[market].currentPrice) ? ' | ' + market + ': ' + this.getPriceRounded(bittrexReducer[market].currentPrice) + '$' : ''
                             })
                         }
                     </Toolbar>
                 </AppBar>
-                {this.state.strategies.map(strategie => {
-                    return strategie.render()
-                })}
+                <GridList cols={MAX_BOTS_COLUMNS} spacing={0} cellHeight='auto'>
+                    {this.state.strategies.map((strategie, index) => {
+                        return strategie.render((this.state.currentBigBot === index), () => { this.setBigBot(index) })
+                    })}
+                </GridList>
             </div>
         );
     }

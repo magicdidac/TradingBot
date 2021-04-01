@@ -1,5 +1,6 @@
 import React from 'react'
-import { Card, CardContent, CardHeader, Typography } from '@material-ui/core'
+import { CardContent, GridListTile, Paper, Typography } from '@material-ui/core'
+import { MAX_BOTS_COLUMNS } from '../../config'
 
 class BotStrategie {
     constructor(name, description, currencie, investment) {
@@ -48,13 +49,13 @@ class BotStrategie {
     }
 
     comfirmOpen(quantity, openedOrder) {
-        this.state = { ...this.state, investment: (this.state.investment - openedOrder.opened.quantityWithoutFees), inInvestment: (this.state.inInvestment + quantity) }
+        this.state = { ...this.state, lastOrder: openedOrder, investment: (this.state.investment - openedOrder.opened.quantityWithoutFees), inInvestment: (this.state.inInvestment + quantity) }
         this.openMessage(quantity)
         this.setIn()
     }
 
     sendQuantity(quantity, closedOrder) {
-        this.state = { ...this.state, investment: this.state.investment + quantity, inInvestment: this.state.inInvestment - closedOrder.opened.quantity }
+        this.state = { ...this.state, lastOrder: closedOrder, investment: this.state.investment + quantity, inInvestment: this.state.inInvestment - closedOrder.opened.quantity }
         this.closeMessage(quantity)
         this.setOut()
     }
@@ -71,21 +72,49 @@ class BotStrategie {
         return ((newPrice / oldPrice) - 1).toFixed(5)
     }
 
-    render() {
+    render(isBig, setBigBot) {
 
         const totalInvestment = (this.state.investment + this.state.inInvestment)
+        const percentageOfBenefits = parseFloat(this.getPercentage(this.state.initialInvestment, totalInvestment) * 100).toFixed(2)
+        const cryptoQuantity = (this.state.isIn && this.state.lastOrder) ? this.state.lastOrder.cryptoQuantity.toFixed(6) : undefined
+        if (isBig) {
+            console.log(cryptoQuantity)
+        }
 
         return (
-            <Card key={this.state.name} variant="outlined" style={{ margin: '50px' }}>
-                <CardHeader
-                    title={this.state.name + ' |' + this.state.initialInvestment.toFixed(2) + '$| [' + this.state.currencie + ']'}
-                    subheader={this.state.description}
-                />
-                <CardContent>
-                    <Typography>In: {this.state.inInvestment.toFixed(2)}$ - Remain: {this.state.investment.toFixed(2)}$</Typography>
-                    <Typography>Benefits: {(totalInvestment - this.state.initialInvestment).toFixed(2)}$ | {parseFloat(this.getPercentage(this.state.initialInvestment, totalInvestment) * 100).toFixed(2)}%</Typography>
-                </CardContent>
-            </Card>
+            <GridListTile key={this.state.name} cols={(isBig) ? MAX_BOTS_COLUMNS : 1}>
+                <Paper onClick={setBigBot} elevation={0} style={{ margin: '1vw', height: isBig ? '95%' : '90%', background: ((percentageOfBenefits < 0) ? '#ffa4a2' : '#b2fab4') }}>
+                    <CardContent>
+                        <div style={{ textAlign: 'right' }}>
+                            {this.state.isIn ? 'IN' : 'OUT'}
+                        </div>
+                        <Typography variant='h4'>{this.state.name}</Typography>
+                        <Typography variant='h6'>{this.state.initialInvestment.toFixed(2) + '$'}</Typography>
+                        <Typography variant='h6'>{'[' + this.state.currencie + ']'}</Typography>
+                    </CardContent>
+                    {isBig && this.state.description &&
+                        <CardContent style={{ paddingTop: '0px' }}>
+                            <Typography variant='h6'>Description</Typography>
+                            <Typography variant='body2'>{this.state.description}</Typography>
+                        </CardContent>
+                    }
+                    {!isBig &&
+                        <CardContent>
+                            <Typography>In: {this.state.inInvestment.toFixed(2)}$</Typography>
+                            <Typography>Out: {this.state.investment.toFixed(2)}$</Typography>
+                            <Typography>Benefits: {(totalInvestment - this.state.initialInvestment).toFixed(2)}$ | {percentageOfBenefits}%</Typography>
+                        </CardContent>
+                    }
+                    {isBig &&
+                        <CardContent>
+                            <Typography>In: {this.state.inInvestment.toFixed(2)}$ | Out: {this.state.investment.toFixed(2)}$</Typography>
+                            <Typography>Benefits: {(totalInvestment - this.state.initialInvestment).toFixed(2)}$ | {percentageOfBenefits}%</Typography>
+                            {cryptoQuantity && <Typography>Quantity: {cryptoQuantity}</Typography>}
+                        </CardContent>
+                    }
+
+                </Paper>
+            </GridListTile>
         )
     }
 }
