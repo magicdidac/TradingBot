@@ -4,7 +4,7 @@ import BotStrategie from "./BotStrategie";
 class LuisStrategie extends BotStrategie {
 
     constructor(name, currencie, investment, thresholdToSell = 0.05, stopLossSell = -0.025, stopLossBuy = 0.025) {
-        const description = ""
+        const description = "Buy when price rise "+stopLossBuy*100+"% of the lower price (since the bot is trying to buy) and when price rise more than "+thresholdToSell*100+"% the bot creates a stop limit at "+stopLossSell*100+"% away the highest price."
         super(name, description, currencie, investment)
 
         this.state = {

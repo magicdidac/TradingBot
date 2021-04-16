@@ -17,21 +17,39 @@ class BotLogic extends React.Component {
             loading: false,
             markets: [],
             currentBigBot: -1,
+            // strategies: [
+            //     new FirstStrategie('First', 'BTC-USD', 100),
+            //     new ThresholdStrategie('TH 0.5%', 'BTC-USD', 100, -0.005, 0.005, 0.005, -0.005),
+            //     new ThresholdStrategie('TH 1%  ', 'BTC-USD', 100),
+            //     new ThresholdStrategie('TH     ', 'BTC-USD', 100, -0.005, 0.003, 0.0075, -0.01),
+            // ]
+
+            // strategies: [
+            //     new FirstStrategie('First', 'BTC-USD', 100),
+            //     new LuisStrategie('L 5%', 'BTC-USD', 100),
+            //     new LuisStrategie('L 10%', 'BTC-USD', 100, 0.1),
+            //     new LuisStrategie('LU 5%', 'ETH-USD', 100),
+            //     new LuisStrategie('LU 10%', 'ETH-USD', 100, 0.1),
+            //     new LuisStrategie('LUI 5%', 'ADA-USD', 100),
+            //     new LuisStrategie('LUI 10%', 'ADA-USD', 100, 0.1),
+            //     new LuisStrategie('LUIS 5%', 'HBAR-USD', 100),
+            //     new LuisStrategie('LUIS 10%', 'HBAR-USD', 100, 0.1),
+            //     new LuisStrategie('LUISS 5%', 'LBC-USD', 100),
+            //     new LuisStrategie('LUISS 10%', 'LBC-USD', 100, 0.1),
+            // ]
+
             strategies: [
                 new FirstStrategie('First', 'BTC-USD', 100),
-                new ThresholdStrategie('TH 0.5%', 'BTC-USD', 100, -0.005, 0.005, 0.005, -0.005),
-                new ThresholdStrategie('TH 1%  ', 'BTC-USD', 100),
-                new ThresholdStrategie('TH     ', 'BTC-USD', 100, -0.005, 0.003, 0.0075, -0.01),
-                new LuisStrategie('L 5%', 'BTC-USD', 100),
-                new LuisStrategie('L 10%', 'BTC-USD', 100, 0.1),
-                new LuisStrategie('LU 5%', 'ETH-USD', 100),
-                new LuisStrategie('LU 10%', 'ETH-USD', 100, 0.1),
-                new LuisStrategie('LUI 5%', 'ADA-USD', 100),
-                new LuisStrategie('LUI 10%', 'ADA-USD', 100, 0.1),
-                new LuisStrategie('LUIS 5%', 'HBAR-USD', 100),
-                new LuisStrategie('LUIS 10%', 'HBAR-USD', 100, 0.1),
-                new LuisStrategie('LUISS 5%', 'LBC-USD', 100),
-                new LuisStrategie('LUISS 10%', 'LBC-USD', 100, 0.1),
+                new LuisStrategie('D 2%', 'BTC-USD', 100, 0.02, -0.01, 0.01),
+                new LuisStrategie('D 3%', 'BTC-USD', 100, 0.03, -0.015, 0.01),
+                new LuisStrategie('DI 2%', 'ETH-USD', 100, 0.02, -0.01, 0.01),
+                new LuisStrategie('DI 3%', 'ETH-USD', 100, 0.03, -0.015, 0.01),
+                new LuisStrategie('DID 2%', 'ADA-USD', 100, 0.02, -0.01, 0.01),
+                new LuisStrategie('DID 3%', 'ADA-USD', 100, 0.03, -0.015, 0.01),
+                new LuisStrategie('DIDA 2%', 'HBAR-USD', 100, 0.02, -0.01, 0.01),
+                new LuisStrategie('DIDA 3%', 'HBAR-USD', 100, 0.03, -0.015, 0.01),
+                new LuisStrategie('DIDAC 2%', 'DOGE-USD', 100, 0.02, -0.01, 0.01),
+                new LuisStrategie('DIDAC 3%', 'DOGE-USD', 100, 0.03, -0.015, 0.01),
             ]
         }
     }
